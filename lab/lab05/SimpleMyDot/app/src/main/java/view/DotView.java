@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import java.util.ArrayList;
 
@@ -19,12 +20,10 @@ public class DotView extends View {
     private Paint paint;
     private DotSimple dotsimple;
     private ArrayList<DotSimple> dotlist = new ArrayList<>();
+
+
     private Bitmap mDrawBitmap;
     private Canvas mBitmapCanvas;
-    private Paint mDrawPaint = new Paint();
-    private Canvas sharecanvas;
-
-
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -64,10 +63,25 @@ public class DotView extends View {
         this.dotsimple.setRadius(dot.getRadius());
         dotlist.add(this.dotsimple);
 
+
+    }
+
+    public void setDotsimple(DotSimple dot) {
+        this.dotsimple = new DotSimple();
+        this.dotsimple.setColorR(dot.getColorR());
+        this.dotsimple.setColorG(dot.getColorG());
+        this.dotsimple.setColorB(dot.getColorB());
+        this.dotsimple.setCenterX(dot.getCenterX());
+        this.dotsimple.setCenterY(dot.getCenterY());
+        this.dotsimple.setRadius(dot.getRadius());
+        dotlist.add(this.dotsimple);
+
+
     }
 
     public void clearDot(){
         dotlist.clear();
+        this.setWillNotDraw(false);
     }
 
     public int checkDot(int x, int y){
@@ -107,4 +121,11 @@ public class DotView extends View {
         return dotlist.get(point);
     }
 
+    public ArrayList<DotSimple> getDotlist() {
+        return dotlist;
+    }
+
+    public void setDotlist(ArrayList<DotSimple> dotlist) {
+        this.dotlist = dotlist;
+    }
 }

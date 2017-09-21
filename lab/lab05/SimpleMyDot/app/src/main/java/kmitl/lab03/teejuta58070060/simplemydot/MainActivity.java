@@ -8,19 +8,28 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.PopupMenu;
 
+import java.util.ArrayList;
+
 import model.DotSimple;
+import view.DotView;
 
 
-public class MainActivity extends AppCompatActivity implements DotViewFragment.OnEditClickedListener{
+public class MainActivity extends AppCompatActivity implements DotViewFragment.OnEditClickedListener, EditDotFragment.OnFinishClickedListener{
 
 
     private Button button;
     private Button button3;
+    private DotSimple editDot;
+    private ArrayList<DotSimple> dotlist;
+    private int point;
+    private boolean isAfterEdit = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +103,50 @@ public class MainActivity extends AppCompatActivity implements DotViewFragment.O
 
 
     @Override
-    public void onEditClicked(DotSimple editdot) {
+    public void onEditClicked(DotSimple editDot, ArrayList<DotSimple> dotlist, int point) {
+        this.editDot = editDot;
+        this.dotlist = dotlist;
+        this.point = point;
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, new EditDotFragment())
                 .addToBackStack(null)
                 .commit();
 
+    }
+
+    public DotSimple getEditdot() {
+        return editDot;
+    }
+
+    public ArrayList<DotSimple> getDotlist() {
+        return dotlist;
+    }
+
+    public int getPoint() {
+        return point;
+    }
+
+    public boolean isAfterEdit() {
+        return isAfterEdit;
+    }
+
+    public void setAfterEdit(boolean afterEdit) {
+        isAfterEdit = afterEdit;
+    }
+
+    @Override
+    public void finishClickedListener(DotSimple dot, ArrayList<DotSimple> dotlist, int point) {
+        this.editDot = dot;
+        this.dotlist = dotlist;
+        this.point = point;
+        isAfterEdit = true;
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, new DotViewFragment())
+                .addToBackStack(null)
+                .commit();
     }
 }

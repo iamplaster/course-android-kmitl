@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -45,14 +46,15 @@ public class DotViewFragment extends Fragment implements Dot.OnDotChangedListene
     private View view;
     private Float touchX;
     private Float touchY;
-    private DotSimple editdot;
+    private DotSimple editDot;
+    private ArrayList<DotSimple> dotlist;
 
     public DotViewFragment() {
         // Required empty public constructor
     }
 
     public interface OnEditClickedListener{
-        void onEditClicked(DotSimple dot);
+        void onEditClicked(DotSimple dot, ArrayList<DotSimple> dotlist, int point);
     }
 
     private OnEditClickedListener listener;
@@ -63,6 +65,12 @@ public class DotViewFragment extends Fragment implements Dot.OnDotChangedListene
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_dot_view, container, false);
         dotView = view.findViewById(R.id.dotViewFragment);
+        if (((MainActivity)getActivity()).isAfterEdit()){
+            dotView.setDotlist(((MainActivity)getActivity()).getDotlist());
+            dotView.clearDotPoint(((MainActivity)getActivity()).getPoint());
+            dotView.setDotsimple(((MainActivity)getActivity()).getEditdot());
+            ((MainActivity)getActivity()).setAfterEdit(false);
+        }
         dot = new Dot(this,0,0,60,255,255,255);
 
         view.setOnTouchListener(new View.OnTouchListener(){
@@ -79,8 +87,10 @@ public class DotViewFragment extends Fragment implements Dot.OnDotChangedListene
                 if(dotView.checkDot(Math.round(touchX-15), Math.round(touchY-15)) == -1){
 
                 }else{
-                    editdot = dotView.getDot(dotView.checkDot(Math.round(touchX-15), Math.round(touchY-15)));
-                    listener.onEditClicked(editdot);
+                    int dotpoint = dotView.checkDot(Math.round(touchX-15), Math.round(touchY-15));
+                    editDot = dotView.getDot(dotpoint);
+                    dotlist = dotView.getDotlist();
+                    listener.onEditClicked(editDot, dotlist, dotpoint);
                 }
                 return true;
             }

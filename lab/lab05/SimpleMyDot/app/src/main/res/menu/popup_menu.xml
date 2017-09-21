@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item
+    android:id="@+id/capscreen"
+    android:title="@string/screen_capture"/>
+
+    <item
+        android:id="@+id/cappic"
+        android:title="@string/cappic"/>
+
+    <item
+        android:id="@+id/clearscreen"
+        android:title="@string/clearscreen"/>
+
+</menu>

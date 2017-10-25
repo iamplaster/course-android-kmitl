@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">LazyInstagram</string>
+    <string name="account_prompt">Acc Name</string>
+
+    <string-array name="account_arrays">
+        <item>android</item>
+        <item>nature</item>
+        <item>cartoon</item>
+    </string-array>
 </resources>

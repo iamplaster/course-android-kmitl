@@ -26,6 +26,17 @@ public class UserProfile {
     @SerializedName("user")
     @Expose
     private String user;
+    @SerializedName("isFollow")
+    @Expose
+    private String isFollow;
+
+    public String getIsFollow() {
+        return isFollow;
+    }
+
+    public void setIsFollow(String isFollow) {
+        this.isFollow = isFollow;
+    }
 
     public List<Post> getPosts() {
         return posts;

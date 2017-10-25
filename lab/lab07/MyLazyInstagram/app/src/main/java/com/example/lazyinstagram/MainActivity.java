@@ -1,17 +1,17 @@
 package com.example.lazyinstagram;
 
-import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -32,10 +32,12 @@ public class MainActivity extends AppCompatActivity {
     private PostAdapterList postAdapterList;
     private RecyclerView recyclerView;
     private boolean isPostGrid = true;
-    private String[] account = {"android", "nature", "cartoon"};
-    private int accPosition = 2;
+    private int accPosition = 1;
     private RecyclerView.LayoutManager layoutManagerGrid = new GridLayoutManager(this, 3);
     private RecyclerView.LayoutManager layoutManagerList = new LinearLayoutManager(this);
+    private int[] followCheck = {0, 0, 0};
+    private int[] updateFollow = {0, 0, 0};
+    private boolean flagUpdateFollow = true;
 
 
 
@@ -43,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getUserProfile("nature");
+
+
 
         postAdapter = new PostAdapter(this);
         postAdapterList = new PostAdapterList(this);
@@ -70,16 +73,24 @@ public class MainActivity extends AppCompatActivity {
                 postAdapter.notifyDataSetChanged();
             }
         });
-        Button swapuser = findViewById(R.id.userswap);
-        swapuser.setOnClickListener(new View.OnClickListener() {
+
+        Spinner accSpinner = findViewById(R.id.accSpinner);
+        accSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                getUserProfile(account[accPosition]);
-                if(accPosition == 2){
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                ((TextView) adapterView.getChildAt(0)).setTextColor(Color.rgb(10, 10, 10));
+                ((TextView) adapterView.getChildAt(0)).setTextSize(20);
+                ((TextView) adapterView.getChildAt(0)).setText("@" + adapterView.getItemAtPosition(i).toString());
+                if(i == adapterView.getCount()-1){
                     accPosition = 0;
-                }else {
-                    accPosition++;
+                }else{
+                    accPosition = i + 1;
                 }
+                getUserProfile(adapterView.getItemAtPosition(i).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
@@ -112,8 +123,53 @@ public class MainActivity extends AppCompatActivity {
                         recyclerView.setAdapter(postAdapterList);
                     }
 
-                    TextView txtname = (TextView) findViewById(R.id.TxtName);
-                    txtname.setText("@" + userProfile.getUser());
+                    if(accPosition == 0){
+                        if(updateFollow[updateFollow.length-1] == 0){
+                            flagUpdateFollow = true;
+                        }else {
+                            flagUpdateFollow = false;
+                        }
+                    }else{
+                        if(updateFollow[accPosition-1] == 0){
+                            flagUpdateFollow = true;
+                        }else {
+                            flagUpdateFollow = false;
+                        }
+                    }
+
+                    if(flagUpdateFollow){
+                        if(userProfile.getIsFollow().equals("true")){
+                            if(accPosition == 0){
+                                followCheck[followCheck.length-1] = 1;
+                                updateFollow[followCheck.length-1] = 1;
+                            }else {
+                                followCheck[accPosition-1] = 1;
+                                updateFollow[accPosition-1] = 1;
+                            }
+                        }else{
+                            if(accPosition == 0){
+                                followCheck[followCheck.length-1] = 0;
+                                updateFollow[followCheck.length-1] = 1;
+                            }else {
+                                followCheck[accPosition-1] = 0;
+                                updateFollow[accPosition-1] = 1;
+                            }
+                        }
+                    }
+
+                    final Button followbttn = findViewById(R.id.followBttn);
+                    setFollowingBttn(followbttn);
+                    followbttn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if(accPosition == 0){
+                                setFollowing(followCheck.length-1);
+                            }else{
+                                setFollowing(accPosition-1);
+                            }
+                            setFollowingBttn(followbttn);
+                        }
+                    });
 
                     ImageView imgProfile = findViewById(R.id.ImgProfile);
                     Glide.with(MainActivity.this).load(userProfile.getUrlProfile()).into(imgProfile);
@@ -139,6 +195,36 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("TAG", "ON FAILURE");
             }
         });
+    }
+
+    public void setFollowing(int position){
+        if(followCheck[position] == 0){
+            followCheck[position] = 1;
+        }else{
+            followCheck[position] = 0;
+        }
+    }
+
+    public void setFollowingBttn(Button followbttn){
+        if(accPosition == 0){
+            if(followCheck[followCheck.length-1] == 1){
+                followbttn.setText("Following");
+                followbttn.setBackgroundColor(Color.rgb(144,164,174));
+            }else{
+                followbttn.setText("Follow");
+                followbttn.setBackgroundColor(Color.rgb(3,169,244));
+            }
+
+        }else {
+            if(followCheck[accPosition-1] == 1){
+                followbttn.setText("Following");
+                followbttn.setBackgroundColor(Color.rgb(144,164,174));
+            }else{
+                followbttn.setText("Follow");
+                followbttn.setBackgroundColor(Color.rgb(3,169,244));
+            }
+
+        }
     }
 
 

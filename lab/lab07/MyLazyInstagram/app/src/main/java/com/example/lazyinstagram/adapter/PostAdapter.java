@@ -2,7 +2,6 @@ package com.example.lazyinstagram.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.Holder>{
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        Log.d("position", Integer.toString(position));
         ImageView image = holder.image;
         Glide.with(context).load(postList.get(position).getUrl()).into(image);
 

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Espresso</string>
+    <string name="user_info">User Info</string>
+    <string name="clear_list">Clear List</string>
+</resources>
